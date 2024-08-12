@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./Images/fevicon.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Weather App&#9925;</title>
+    <style>
+         .tabContainer {
+            width: 90%;
+            margin: 0 auto;
+            margin-top: 4rem;
+            max-width: 550px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .current-tab{
+            background-color: rgba(219, 226, 239, 0.5);
+            background-size:cover;
+            border-radius: 4px;
+        }
+        .grant-location-container.active{
+         display:flex;
+        }
+        .loading-container.active{
+        display: flex;
+        }
+        .user-info-container.active{
+        display: flex;
+        }
+        .parameter{
+            width:40%;
+            max-width:200px;
+            background-color: rgba(219, 226, 239, 0.5);;
+            border-radius: 5px;
+            padding:1rem;
+            display: flex;
+            flex-direction: column;
+            gap:5px 0;
+            align-items: center; 
+        }
+        .parameter img{
+            width:50px;
+            height:50px;
+        }
+        .parameter p:first-of-type{
+            font-size: 1.15rem;
+            font-weight:600;
+            color:white;
+            text-transform: uppercase;
+        }
+
+        .parameter p:last-of-type{
+            font-size: 1rem;
+            color:white;
+            font-weight: 200;
+        }
+         /* Apply style to all button collectively */
+        .btn {
+            all: unset;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            padding: 10px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #3F72AF;
+        }
+
+        .form-container .btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: unset;
+            border-radius: 100%;
+            background-color:#3F72AF;
+        }
+        .form-container.active{
+            display: flex;
+        }
+
+        .api-error-container.active {
+            display: flex;
+            gap: 1rem 0;
+        }
+
+        .api-error-container p {
+            text-align: center;
+        }
+
+        .api-error-container img {
+            width: 80%;
+            max-width: 230px;
+            object-fit: cover;
+        }
+                
+
+    </style>
+</head>
+<body style=" background:url(https://images.unsplash.com/photo-1557683316-973673baf926?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGdyYWRpZW50fGVufDB8fDB8fA%3D%3D&w=1000&q=80);background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <section class="min-h-[100vh] mb-12" >
+        <p class="text-center tracking-wider text-4xl text-white font-bold uppercase pt-5 pt-4 ">WEATHER APP &#9925;</p>
+        <div class="tabContainer">
+            <p data-userWeather class="cursor-pointer text-sm tracking-wide pt-1 pb-1 pl-2 pr-2 text-lg text-white whitespace-nowrap">Your Weather</p>
+            <p data-searchWeather class="cursor-pointer text-sm tracking-wide pt-1 pb-1 pl-2 pr-2 text-lg text-white whitespace-nowrap">Search Weather</p>
+        </div>
+        <!--Let's create a container that will contain all 4 pages-->
+        <div class="mt-24">
+            <!--Grant Location page-->
+            <div class="grant-location-container flex flex-col items-center hidden">
+                <img src="./Images/location.png" width="80" height="80" loading="lazy" alt="location" class="mb-4">
+                <p class="text-3xl font-semibold text-white pt-1 whitespace-nowrap">Grant Location Access</p>
+                <p class="font-semibold text-white pt-1 whitespace-nowrap " data-messageText>Allow location to get weather Information</p>
+                <button class="btn whitespace-nowrap mt-2 shadow-xl shadow-cyan-500/50 " data-grantAccess>Grant Access</button>
+            </div>
+            <!--Search city Form container-->
+            <form class="form-container w-11/12 max-w-lg mx-auto flex justify center items-center gap-x-2 mb-3 hidden" data-searchForm>
+                <input placeholder="Search for City..." data-searchInput class="placeholder-white text-white" style="all: unset;
+                width: calc(100% - 80px); color:white; height: 40px; padding: 0 20px; background-color:rgba(219, 226, 239, 0.5); border-radius: 10px;">
+                <button class="btn" type="submit">
+                    <img src="./Images/search.png"  width="30" height="30" loading="lazy" alt="searchicon" class="p-1">
+                </button>
+            </form>
+            <!--Loading Screen Conatiner-->
+            <div class="loading-container flex flex-col items-center hidden">
+                <img src="./Images/loading.gif" width="150" height="150" alt="loader">
+                <p class="uppercase text-white text-lg ">Loading</p>
+            </div>
+            <!--Weather Information Container-->
+            <div class="user-info-container flex flex-col items-center hidden">
+                <div class="Name-Icon flex items-center gap-x-2 mb-1">
+                    <p data-cityName class="text-2xl font-medium text-white "></p>
+                    <img data-countryIcon style="width:40px; height:30px"; >
+                </div>
+                <p data-weatherDesc class="text-lg text-white uppercase"></p>
+                <img data-weatherIcon style="width: 90px;height:90px; object-fit: contain;">
+                <p data-temp class="text-3xl font-bold text-white"></p>
+
+                <!--Let's create three Cards-->
+                <div class="parameterContainer w-11/12 flex flex-col md:flex md:flex-row gap-x-5 gap-y-2 justify-center items-center mt-2">
+                    <!--card 1-->
+                    <div class="parameter">
+                        <img src="./Images/wind.png" >
+                        <p class="whitespace-nowrap text-sm md:text-lg">Windspeed</p>
+                        <p data-windspeed class="whitespace-nowrap"></p>
+                    </div>
+
+                    <!--card 2-->
+                    <div class="parameter">
+                        <img src="./Images/humidity.png" >
+                        <p class="whitespace-nowrap text-sm md:text-lg">Humidity</p>
+                        <p data-humidity class="whitespace-nowrap"></p>
+                    </div>
+
+                    <!--card 3-->
+                    <div class="parameter">
+                        <img src="./Images/cloud.png" >
+                        <p class="whitespace-nowrap text-sm md:text-lg">Clouds</p>
+                        <p data-cloudiness class="whitespace-nowrap"></p>
+                    </div>
+                </div>
+            </div>
+            <!--API ERROR-->
+            <div class="api-error-container flex flex-col items-center hidden">
+                <img src="./Images/not-found.png" width="300" height="300" alt="404" data-notFoundImg >
+                <p data-apierrortext class="text-white text-lg uppercase "></p>
+                <button class="btn" data-apiErrorBtn>Retry</button>
+            </div>
+        </div>
+        <p class=" designed w-11/12 flex flex-col md:flex md:flex-row gap-x-5 gap-y-2 whitespace-nowrap justify-center items-center mt-2 text-white font-bold mt-4"> &#9889;Designed & Developed by Mohit Kumar &#9889;</p>
+    </section>
+    <script src="index.js"></script>
+</body>
+</html>
